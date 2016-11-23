@@ -9,7 +9,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "dist", "app"),
         filename: "bundle.js",
-        pablicPath: "/app/"
+        publicPath: "/dist/app"
     },
 
     module: {
@@ -24,6 +24,10 @@ module.exports = {
             {
                 test: /\.css$/,
                 loader: "style-loader!css-loader"
+            },
+            {
+                test: /\.html$/,
+                loader: "html"
             }
         ]
     },
