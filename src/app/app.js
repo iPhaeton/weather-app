@@ -1,10 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import WeatherDashboard from './components/weather-info.component';
+import Map from './components/map.component';
+
+
 class App extends React.Component {
   render() {
     return (
-      <div>We have started react!!</div>
+      <div>
+          <WeatherDashboard/>
+          <Map/>
+      </div>
     );
   }
 }
