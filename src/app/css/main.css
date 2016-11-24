@@ -1,3 +1,7 @@
+@import "../../vendor/css/bootstrap.min.css";
+@import "../../vendor/css/bootstrap-theme.min.css";
+
+
 body {
     background:pink;
 }
