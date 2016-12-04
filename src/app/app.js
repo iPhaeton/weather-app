@@ -3,16 +3,17 @@ import ReactDOM from 'react-dom';
 
 import WeatherDashboard from './components/weather-info.component';
 import Map from './components/map.component';
-
+import Succession from "./libs/succession";
 
 class App extends React.Component {
     render() {
-        this.getLocation((err, location) => {
-            if (err) return console.log(err);
-            this.location = location;
-            console.log(this.location);
-            this.showMap();
-        });
+        var succession = new Succession([this.getPosition, this.showMap],
+            (err, position) => {
+                if (err) console.log(err);
+                else console.log(position);
+            }
+        );
+        succession.execute();
 
         return (
             <div>
@@ -22,29 +23,30 @@ class App extends React.Component {
         );
     }
 
-    showMap () {
+    showMap (callback, position) {
         var self = this;
 
         var googleMapsApi = require("google-maps-api")("AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE");
         googleMapsApi().then((googleMaps) => {
             var mapProperties = {
-                center: new googleMaps.LatLng(self.location.coords.latitude, self.location.coords.longitude),
+                center: new googleMaps.LatLng(position.coords.latitude, position.coords.longitude),
                 zoom: 10,
                 mapTypeId: googleMaps.MapTypeId.ROADMAP
             };
             var map = new googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
+            callback(null, position);
         }, (err) => {
-            console.log(err);
+            callback(err);
         });
     }
 
-    getLocation (callback) {
+    getPosition (callback) {
         if (!navigator.geolocation) {
             return callback(new NoSupportError("Geolocation"));
         };
 
-        navigator.geolocation.getCurrentPosition((pos) => {
-            callback(null, pos);
+        navigator.geolocation.getCurrentPosition((position) => {
+            callback(null, position);
         }, (err) => {
             callback(err);
         }, {
