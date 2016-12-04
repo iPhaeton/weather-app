@@ -6,15 +6,22 @@ import Map from './components/map.component';
 import Succession from "./libs/succession";
 
 class App extends React.Component {
-    render() {
+    constructor () {
+        super();
+
         var succession = new Succession([this.getPosition, this.showMap],
             (err, position) => {
                 if (err) console.log(err);
-                else console.log(position);
+                else {
+                    this.position = position;
+                    console.log(position);
+                }
             }
         );
         succession.execute();
+    };
 
+    render() {
         return (
             <div>
                 <WeatherDashboard/>

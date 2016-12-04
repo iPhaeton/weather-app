@@ -31,7 +31,7 @@ export default class Succession {
                 this.callback(err);
             })
         } else {
-            this.callback(yieldedValue.value)
+            this.callback(null, yieldedValue.value)
         }
     };
 }
