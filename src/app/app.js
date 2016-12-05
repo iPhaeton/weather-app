@@ -13,7 +13,8 @@ class App extends React.Component {
         var succession = new Succession(
             [
                 this.getPosition.bind(this),
-                this.getGoogleMaps.bind(this)
+                this.getGoogleMaps.bind(this),
+                this.getPlace.bind(this)
             ], (err, results) => {
                 if (err) console.log(err);
                 else {
@@ -67,20 +68,18 @@ class App extends React.Component {
         var map = new googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
     }
 
-
-
     getPlace (callback, position, googleMaps) {
         var geocoder = new googleMaps.Geocoder;
         geocoder.geocode ({
             "location": {
-                lat: position.latitude,
-                lng: position.longitude
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
             }
-        }, (results, status) => {
-            if (status === this._googleMaps.GeocoderStatus.OK) {
-                callback(null, this.locationInfo.place);
+        }, (places, status) => {
+            if (status === googleMaps.GeocoderStatus.OK) {
+                callback(null, places[0]);
             }
-            else if (status === this._googleMaps.GeocoderStatus.ZERO_RESULTS) {
+            else if (status === googleMaps.GeocoderStatus.ZERO_RESULTS) {
                 callback(null, "No people here");
             }
             else callback(new ServerResponseError(status, "Google maps Api error"));
