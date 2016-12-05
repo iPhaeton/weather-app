@@ -10,6 +10,10 @@ class App extends React.Component {
     constructor () {
         super();
 
+        this.state = {
+            location: {}
+        };
+
         var succession = new Succession(
             [
                 this.getPosition.bind(this),
@@ -18,7 +22,7 @@ class App extends React.Component {
             ], (err, results) => {
                 if (err) console.log(err);
                 else {
-                    console.log(results);
+                    console.log(this.state.location);
                 }
             }
         );
@@ -40,6 +44,7 @@ class App extends React.Component {
         };
 
         navigator.geolocation.getCurrentPosition((position) => {
+            this.setLocation({position});
             callback(null, position);
         }, (err) => {
             callback(err);
@@ -48,42 +53,61 @@ class App extends React.Component {
         });
     }
 
-    getGoogleMaps (callback, position) {
+    getGoogleMaps (callback) {
         var googleMapsApi = require("google-maps-api")("AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE");
 
         googleMapsApi().then((googleMaps) => {
-            this.showMap(position, googleMaps);
+            this.googleMaps = googleMaps;
+            this.showMap();
             callback(null, googleMaps);
         }, (err) => {
             callback(err);
         });
     }
 
-    showMap (position, googleMaps) {
+    showMap () {
+        var coords = this.state.location.position.coords;
+
         var mapProperties = {
-            center: new googleMaps.LatLng(position.coords.latitude, position.coords.longitude),
+            center: new this.googleMaps.LatLng(coords.latitude, coords.longitude),
             zoom: 10,
-            mapTypeId: googleMaps.MapTypeId.ROADMAP
+            mapTypeId: this.googleMaps.MapTypeId.ROADMAP
         };
-        var map = new googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
+        var map = new this.googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
     }
 
-    getPlace (callback, position, googleMaps) {
-        var geocoder = new googleMaps.Geocoder;
+    getPlace (callback) {
+        var coords = this.state.location.position.coords;
+
+        var geocoder = new this.googleMaps.Geocoder;
         geocoder.geocode ({
             "location": {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
+                lat: coords.latitude,
+                lng: coords.longitude
             }
         }, (places, status) => {
-            if (status === googleMaps.GeocoderStatus.OK) {
+            if (status === this.googleMaps.GeocoderStatus.OK) {
+                this.setLocation({place: places[0]});
                 callback(null, places[0]);
             }
-            else if (status === googleMaps.GeocoderStatus.ZERO_RESULTS) {
+            else if (status === this.googleMaps.GeocoderStatus.ZERO_RESULTS) {
+                this.setLocation({place: null});
                 callback(null, "No people here");
             }
             else callback(new ServerResponseError(status, "Google maps Api error"));
         })
+    }
+
+    setLocation (params) {
+        if (params.position === undefined) params.position = this.state.location.position;
+        if (params.place === undefined) params.place = this.state.location.place;
+
+        this.setState({
+            location: {
+                position: params.position,
+                place: params.place
+            }
+        });
     }
 }
 
