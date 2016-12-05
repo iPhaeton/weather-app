@@ -10,11 +10,11 @@ class App extends React.Component {
         super();
 
         var succession = new Succession([this.getPosition, this.showMap],
-            (err, position) => {
+            (err, results) => {
                 if (err) console.log(err);
                 else {
-                    this.position = position;
-                    console.log(position);
+                    this.position = results[0];
+                    console.log(this.position);
                 }
             }
         );
@@ -30,23 +30,6 @@ class App extends React.Component {
         );
     }
 
-    showMap (callback, position) {
-        var self = this;
-
-        var googleMapsApi = require("google-maps-api")("AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE");
-        googleMapsApi().then((googleMaps) => {
-            var mapProperties = {
-                center: new googleMaps.LatLng(position.coords.latitude, position.coords.longitude),
-                zoom: 10,
-                mapTypeId: googleMaps.MapTypeId.ROADMAP
-            };
-            var map = new googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
-            callback(null, position);
-        }, (err) => {
-            callback(err);
-        });
-    }
-
     getPosition (callback) {
         if (!navigator.geolocation) {
             return callback(new NoSupportError("Geolocation"));
@@ -58,6 +41,23 @@ class App extends React.Component {
             callback(err);
         }, {
             timeout: 30000
+        });
+    }
+
+    showMap (callback, position) {
+        var self = this;
+
+        var googleMapsApi = require("google-maps-api")("AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE");
+        googleMapsApi().then((googleMaps) => {
+            var mapProperties = {
+                center: new googleMaps.LatLng(position.coords.latitude, position.coords.longitude),
+                zoom: 10,
+                mapTypeId: googleMaps.MapTypeId.ROADMAP
+            };
+            var map = new googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
+            callback(null);
+        }, (err) => {
+            callback(err);
         });
     }
 }
