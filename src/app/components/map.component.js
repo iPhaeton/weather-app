@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {NoSupportError} from "../errors/errors.js";
-
 class Map extends React.Component {
 
     render() {

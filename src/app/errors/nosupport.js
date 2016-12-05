@@ -1,4 +1,4 @@
-export class NoSupportError extends Error{
+export default class NoSupportError extends Error{
     constructor (message) {
         super (message + "is not supported by your browser");
 
@@ -9,6 +9,6 @@ export class NoSupportError extends Error{
             Error.captureStackTrace(this, NoSupportError);
         } else {
             this.stack = (new Error()).stack;
-        };
+        }
     }
-};
+}

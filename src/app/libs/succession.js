@@ -10,14 +10,14 @@ export default class Succession {
 
         this.generator = (function* () {
             for (var i = 0; i < self.functions.length-1; i++) {
-                var prevResult = yield self.getPromise(self.functions[i], prevResult);
+                yield self.getPromise(self.functions[i]);
             };
-            return self.getPromise(self.functions[i], prevResult);
+            return self.getPromise(self.functions[i]);
         })();
     };
 
-    execute (prevResult) {
-        var yieldedValue = this.generator.next(prevResult);
+    execute () {
+        var yieldedValue = this.generator.next();
         var nextPromise = yieldedValue.value;
 
         nextPromise.then((result) => {
@@ -32,12 +32,12 @@ export default class Succession {
         });
     };
 
-    getPromise (func, prevResult) {
+    getPromise (func) {
         return new Promise ((resolve, reject) => {
             func((err, result) => {
                 if (err) reject(err);
                 else resolve(result);
-            }, prevResult);
+            }, ...this.results);
         });
     }
 }
