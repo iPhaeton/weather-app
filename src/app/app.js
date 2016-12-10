@@ -4,8 +4,7 @@ import ReactDOM from 'react-dom';
 import WeatherDashboard from './components/weather-info.component';
 import Map from './components/map.component';
 import Succession from "./libs/succession";
-import NoSupportError from "./errors/nosupport.js";
-import ServerResponseError from "./errors/serverresponse.js";
+import {NoSupportError, ServerResponseError} from "./errors";
 
 class App extends React.Component {
     constructor () {
