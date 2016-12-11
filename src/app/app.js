@@ -22,6 +22,10 @@ class App extends React.Component {
             ], (err, results) => {
                 if (err) console.log(err);
                 else {
+                    this.setLocation({
+                        position: results[0],
+                        place: results[2]
+                    });
                     console.log(this.state.location);
                 }
             }
@@ -44,7 +48,6 @@ class App extends React.Component {
         };
 
         navigator.geolocation.getCurrentPosition((position) => {
-            this.setLocation({position});
             callback(null, position);
         }, (err) => {
             callback(err);
@@ -53,20 +56,20 @@ class App extends React.Component {
         });
     }
 
-    getGoogleMaps (callback) {
+    getGoogleMaps (callback, position) {
         var googleMapsApi = require("google-maps-api")("AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE");
 
         googleMapsApi().then((googleMaps) => {
             this.googleMaps = googleMaps;
-            this.showMap();
+            this.showMap(position);
             callback(null, googleMaps);
         }, (err) => {
             callback(err);
         });
     }
 
-    showMap () {
-        var coords = this.state.location.position.coords;
+    showMap (position) {
+        var coords = position.coords;
 
         var mapProperties = {
             center: new this.googleMaps.LatLng(coords.latitude, coords.longitude),
@@ -76,8 +79,8 @@ class App extends React.Component {
         var map = new this.googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
     }
 
-    getPlace (callback) {
-        var coords = this.state.location.position.coords;
+    getPlace (callback, position) {
+        var coords = position.coords;
 
         var geocoder = new this.googleMaps.Geocoder;
         geocoder.geocode ({
@@ -87,13 +90,10 @@ class App extends React.Component {
             }
         }, (places, status) => {
             if (status === this.googleMaps.GeocoderStatus.OK) {
-                var place = this.getCity(places);
-                this.setLocation({place});
-                callback(null, place);
+                callback(null, this.getCity(places));
             }
             else if (status === this.googleMaps.GeocoderStatus.ZERO_RESULTS) {
-                this.setLocation({place: null});
-                callback(null, "No people here");
+                callback(null, null);
             }
             else callback(new ServerResponseError(status, "Google maps Api error"));
         })
