@@ -87,8 +87,9 @@ class App extends React.Component {
             }
         }, (places, status) => {
             if (status === this.googleMaps.GeocoderStatus.OK) {
-                this.setLocation({place: places[0]});
-                callback(null, places[0]);
+                var place = this.getCity(places);
+                this.setLocation({place});
+                callback(null, place);
             }
             else if (status === this.googleMaps.GeocoderStatus.ZERO_RESULTS) {
                 this.setLocation({place: null});
@@ -96,6 +97,15 @@ class App extends React.Component {
             }
             else callback(new ServerResponseError(status, "Google maps Api error"));
         })
+    }
+
+    getCity (results) {
+        for (var i = results.length-1; i >= 0; i--) {
+            for (var j = 0; j < results[i].types.length; j++) {
+                if (results[i].types[j] === "locality") return results[i];
+            };
+        };
+        return null;
     }
 
     setLocation (params) {
