@@ -6,6 +6,6 @@ body {
     background:pink;
 }
 
-#map-canvas {
+#mapCanvas {
     height: 700px;
 }

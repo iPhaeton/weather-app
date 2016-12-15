@@ -6,6 +6,8 @@ import Map from './components/map.component';
 import Succession from "./libs/succession";
 import {NoSupportError, ServerResponseError} from "./errors";
 
+import mainStyles from "./css/main.css";
+
 class App extends React.Component {
     constructor () {
         super();
@@ -76,7 +78,7 @@ class App extends React.Component {
             zoom: 10,
             mapTypeId: this.googleMaps.MapTypeId.ROADMAP
         };
-        var map = new this.googleMaps.Map(document.getElementById("map-canvas"), mapProperties);
+        var map = new this.googleMaps.Map(document.getElementById(mainStyles.mapCanvas), mapProperties);
     }
 
     getPlace (callback, position) {
