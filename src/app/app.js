@@ -5,8 +5,6 @@ import Map from "./components/map.component.js";
 import WeatherDashboard from './components/weather-info.component';
 import {NoSupportError} from "./errors";
 
-import mainStyles from "./css/main.css";
-
 class App extends React.Component {
     constructor () {
         super();
@@ -30,7 +28,7 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <WeatherDashboard/>
+                <WeatherDashboard position={this.state.location.position}/>
                 <Map center={this.state.location.position} initiatingStateProps={this.state.lastChangedProps} setLocation={this.setLocation.bind(this)}/>
             </div>
         );

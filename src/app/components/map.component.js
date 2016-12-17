@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import mainStyles from "../css/main.css";
+import mapStyles from "../css/map.css";
 import bootstrapStyles from "../../vendor/css/bootstrap.min.css";
 
 import Succession from "../libs/succession";
@@ -41,7 +41,7 @@ class Map extends React.Component {
         };
 
         return (
-            <div id={mainStyles.mapCanvas} className={bootstrapStyles["col-md-8"]}>Map here</div>
+            <div id={mapStyles.mapCanvas} className={bootstrapStyles["col-md-8"]}>Map here</div>
         );
     }
 
@@ -69,7 +69,7 @@ class Map extends React.Component {
             zoom: 10,
             mapTypeId: this.googleMaps.MapTypeId.ROADMAP
         };
-        var map = new this.googleMaps.Map(document.getElementById(mainStyles.mapCanvas), mapProperties);
+        var map = new this.googleMaps.Map(document.getElementById(mapStyles.mapCanvas), mapProperties);
     }
 
     getPlace (callback) {
