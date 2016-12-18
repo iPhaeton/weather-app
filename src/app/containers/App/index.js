@@ -7,39 +7,25 @@ import {NoSupportError} from "../../errors";
 
 import bootstrapStyles from "../../../vendor/css/bootstrap.min.css";
 
-export default class App extends React.Component {
-    constructor () {
-        super();
+import {connect} from "react-redux";
 
-        this.state = {
-            location: {
-                position: null,
-                place: null
-            }
-        };
-
-        //Track the actions that change state
-        this.initiatingAction = new Set();
-
-        this.getPosition((err, position) => {
-            if (err) console.log(err);
-            else {
-                this.setLocation({position});
-            }
-        });
+class App extends React.Component {
+    constructor (props) {
+        super(props);
     };
 
     render() {
+        console.log(this.props.location);
+
         return (
             <div className={bootstrapStyles.row}>
-                <Map center={this.state.location.position} initiatingAction={this.initiatingAction}
-                     setLocation={this.setLocation.bind(this)} setInitiatingAction={this.setInitiatingAction.bind(this)}/>
-                <WeatherDashboard position={this.state.location.position} initiatingAction={this.initiatingAction}/>
+                <Map center={this.props.location.position} />
+                <WeatherDashboard position={this.props.location.position} />
             </div>
         );
     }
 
-    getPosition (callback) {
+    /*getPosition (callback) {
         if (!navigator.geolocation) {
             return callback(new NoSupportError("Geolocation"));
         };
@@ -68,5 +54,13 @@ export default class App extends React.Component {
 
     setInitiatingAction (actions) {
         this.initiatingAction = new Set(actions);
+    }*/
+};
+
+function mapStateToProps (state) {
+    return {
+        location: state.location
     }
-}
+};
+
+export default connect (mapStateToProps)(App);

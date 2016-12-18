@@ -33,7 +33,7 @@ class Map extends React.Component {
             );
         };
 
-        if (this.props.initiatingAction.has("position") || this.props.initiatingAction.has("googleMaps")) {
+        //if (this.props.initiatingAction.has("position") || this.props.initiatingAction.has("googleMaps")) {
             setTimeout(this.showMap.bind(this), 0);
 
             /*this.getPlace((err, place) => {
@@ -42,7 +42,7 @@ class Map extends React.Component {
                     this.props.setLocation({place});
                 }
             });*/
-        };
+        //};
 
         return (
             <div id={mapStyles.mapCanvas} className={bootstrapStyles["col-md-8"]}>Map here</div>
@@ -62,9 +62,6 @@ class Map extends React.Component {
     }
 
     setGoogleMaps (googleMaps) {
-        try {this.props.setInitiatingAction(["googleMaps"])}
-        catch (err) {console.log(err)}
-
         this.setState({googleMaps});
     }
 
