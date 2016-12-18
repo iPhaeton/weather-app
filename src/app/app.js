@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Map from "./components/map.component.js";
-import WeatherDashboard from './components/weather-info.component';
+import WeatherDashboard from './components/weather-info.component.js';
 import {NoSupportError} from "./errors";
+
+import bootstrapStyles from "../vendor/css/bootstrap.min.css";
 
 class App extends React.Component {
     constructor () {
@@ -27,9 +29,9 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
-                <WeatherDashboard position={this.state.location.position}/>
+            <div className={bootstrapStyles.row}>
                 <Map center={this.state.location.position} initiatingStateProps={this.state.lastChangedProps} setLocation={this.setLocation.bind(this)}/>
+                <WeatherDashboard position={this.state.location.position} initiatingStateProps={this.state.lastChangedProps}/>
             </div>
         );
     }
