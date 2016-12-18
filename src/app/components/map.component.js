@@ -14,32 +14,34 @@ class Map extends React.Component {
     constructor (props) {
         super(props);
 
-        this.allowRender = true;
+        this.state = {
+            googleMaps: null
+        };
+
+        this.getGoogleMaps((err) => {
+            if (err) return console.log(err);
+        })
     }
 
     render() {
-        if (!this.props.center) {
+        /*console.log(this.props.center);
+        console.log(this.state.googleMaps);*/
+
+        if (!this.props.center || !this.state.googleMaps) {
             return (
                 <div>Loading...</div>
             );
         };
 
-        if (this.props.initiatingStateProps.has("position")) {
-            var succession = new Succession(
-                [
-                    this.getGoogleMaps.bind(this),
-                    this.getPlace.bind(this)
-                ], (err, results) => {
-                    if (err) console.log(err);
-                    else {
-                        this.allowRender = false;
-                        this.props.setLocation({
-                            place: results[1]
-                        });
-                    }
+        if (this.props.initiatingAction.has("position") || this.props.initiatingAction.has("googleMaps")) {
+            setTimeout(this.showMap.bind(this), 0);
+
+            this.getPlace((err, place) => {
+                if (err) console.log(err);
+                else {
+                    this.props.setLocation({place});
                 }
-            );
-            succession.execute();
+            });
         };
 
         return (
@@ -47,47 +49,51 @@ class Map extends React.Component {
         );
     }
 
+    //Get google maps and show map--------------------------------------------------------------------------------------
     getGoogleMaps (callback) {
         var googleMapsApi = require("google-maps-api")(GOOGLE_API_KEY);
 
         googleMapsApi().then((googleMaps) => {
-            this.googleMaps = googleMaps;
-            try {
-                this.showMap();
-            } catch (err) {
-                callback(err);
-            };
-            callback(null, googleMaps);
+            this.setGoogleMaps(googleMaps);
+            callback(null);
         }, (err) => {
             callback(err);
         });
+    }
+
+    setGoogleMaps (googleMaps) {
+        try {this.props.setInitiatingAction(["googleMaps"])}
+        catch (err) {console.log(err)}
+
+        this.setState({googleMaps});
     }
 
     showMap () {
         var coords = this.props.center.coords;
 
         var mapProperties = {
-            center: new this.googleMaps.LatLng(coords.latitude, coords.longitude),
+            center: new this.state.googleMaps.LatLng(coords.latitude, coords.longitude),
             zoom: 10,
-            mapTypeId: this.googleMaps.MapTypeId.ROADMAP
+            mapTypeId: this.state.googleMaps.MapTypeId.ROADMAP
         };
-        var map = new this.googleMaps.Map(document.getElementById(mapStyles.mapCanvas), mapProperties);
+        var map = new this.state.googleMaps.Map(document.getElementById(mapStyles.mapCanvas), mapProperties);
     }
 
+    //Get a city name by coordinates------------------------------------------------------------------------------------
     getPlace (callback) {
         var coords = this.props.center.coords;
 
-        var geocoder = new this.googleMaps.Geocoder;
+        var geocoder = new this.state.googleMaps.Geocoder;
         geocoder.geocode ({
             "location": {
                 lat: coords.latitude,
                 lng: coords.longitude
             }
         }, (places, status) => {
-            if (status === this.googleMaps.GeocoderStatus.OK) {
+            if (status === this.state.googleMaps.GeocoderStatus.OK) {
                 callback(null, this.getCity(places));
             }
-            else if (status === this.googleMaps.GeocoderStatus.ZERO_RESULTS) {
+            else if (status === this.state.googleMaps.GeocoderStatus.ZERO_RESULTS) {
                 callback(null, null);
             }
             else callback(new ServerResponseError(status, "Google maps Api error"));

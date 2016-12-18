@@ -15,9 +15,11 @@ class App extends React.Component {
             location: {
                 position: null,
                 place: null
-            },
-            lastChangedProps: new Set()
+            }
         };
+
+        //Track the actions that change state
+        this.initiatingAction = new Set();
 
         this.getPosition((err, position) => {
             if (err) console.log(err);
@@ -30,8 +32,9 @@ class App extends React.Component {
     render() {
         return (
             <div className={bootstrapStyles.row}>
-                <Map center={this.state.location.position} initiatingStateProps={this.state.lastChangedProps} setLocation={this.setLocation.bind(this)}/>
-                <WeatherDashboard position={this.state.location.position} initiatingStateProps={this.state.lastChangedProps}/>
+                <Map center={this.state.location.position} initiatingAction={this.initiatingAction}
+                     setLocation={this.setLocation.bind(this)} setInitiatingAction={this.setInitiatingAction.bind(this)}/>
+                <WeatherDashboard position={this.state.location.position} initiatingAction={this.initiatingAction}/>
             </div>
         );
     }
@@ -51,15 +54,20 @@ class App extends React.Component {
     }
 
     setLocation (params) {
+        this.setInitiatingAction(Object.getOwnPropertyNames(params).concat("location"));
+
         this.setState({
             location: {
                 position: params.position || this.state.location.position,
                 place: params.place || this.state.location.place
-            },
-            lastChangedProps: new Set(Object.getOwnPropertyNames(params).concat("location"))
+            }
         });
 
         console.log(this.state.location);
+    }
+
+    setInitiatingAction (actions) {
+        this.initiatingAction = new Set(actions);
     }
 }
 
