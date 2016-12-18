@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Map from "./components/map.component.js";
-import WeatherDashboard from './components/weather-info.component.js';
-import {NoSupportError} from "./errors";
+import Map from "../../components/map.component.js";
+import WeatherDashboard from '../../components/weather-info.component.js';
+import {NoSupportError} from "../../errors";
 
-import bootstrapStyles from "../vendor/css/bootstrap.min.css";
+import bootstrapStyles from "../../../vendor/css/bootstrap.min.css";
 
-class App extends React.Component {
+export default class App extends React.Component {
     constructor () {
         super();
 
@@ -70,5 +70,3 @@ class App extends React.Component {
         this.initiatingAction = new Set(actions);
     }
 }
-
-ReactDOM.render(<App/>, document.getElementById('react-container'));

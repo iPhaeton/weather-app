@@ -36,12 +36,12 @@ class Map extends React.Component {
         if (this.props.initiatingAction.has("position") || this.props.initiatingAction.has("googleMaps")) {
             setTimeout(this.showMap.bind(this), 0);
 
-            this.getPlace((err, place) => {
+            /*this.getPlace((err, place) => {
                 if (err) console.log(err);
                 else {
                     this.props.setLocation({place});
                 }
-            });
+            });*/
         };
 
         return (

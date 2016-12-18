@@ -1,6 +1,11 @@
 import "./css/main.css";
 import "../index.html";
-import "./app.js"
 
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-alert("It's raining!!!");
+import App from "./containers/App";
+
+import reducers from './reducers.js';
+
+ReactDOM.render(<App/>, document.getElementById('react-container'));
