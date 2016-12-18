@@ -7,6 +7,8 @@ import bootstrapStyles from "../../vendor/css/bootstrap.min.css";
 import Succession from "../libs/succession";
 import {ServerResponseError} from "../errors";
 
+const GOOGLE_API_KEY = "AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE";
+
 class Map extends React.Component {
 
     constructor (props) {
@@ -46,7 +48,7 @@ class Map extends React.Component {
     }
 
     getGoogleMaps (callback) {
-        var googleMapsApi = require("google-maps-api")("AIzaSyBIv5Z7Gmo-glNiiqhTqGfISRr-wTQ3MSE");
+        var googleMapsApi = require("google-maps-api")(GOOGLE_API_KEY);
 
         googleMapsApi().then((googleMaps) => {
             this.googleMaps = googleMaps;
